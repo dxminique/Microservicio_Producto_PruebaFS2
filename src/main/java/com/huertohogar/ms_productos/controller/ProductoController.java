@@ -1,14 +1,12 @@
 package com.huertohogar.ms_productos.controller;
 
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
 import com.huertohogar.ms_productos.model.Producto;
 import com.huertohogar.ms_productos.service.ProductoService;
+
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
-
 
 @RestController
 @RequestMapping("/api/productos")
@@ -16,14 +14,14 @@ public class ProductoController {
 
     private final ProductoService productoService;
 
-    //prueba para conectar con el gateway xd
+    public ProductoController(ProductoService productoService) {
+        this.productoService = productoService;
+    }
+
+    // TEST: comprobar si está vivo el microservicio
     @GetMapping("/ping")
     public String ping() {
         return "ms-productos OK";
-    }
-
-    public ProductoController(ProductoService productoService) {
-        this.productoService = productoService;
     }
 
     @GetMapping
@@ -49,5 +47,15 @@ public class ProductoController {
     @DeleteMapping("/{id}")
     public void delete(@PathVariable Long id) {
         productoService.delete(id);
+    }
+
+
+    @PutMapping("/{id}/descontarStock")
+    public ResponseEntity<?> descontarStock(
+            @PathVariable Long id,
+            @RequestParam int cantidad) {
+
+        productoService.descontarStock(id, cantidad);
+        return ResponseEntity.ok("Stock actualizado");
     }
 }

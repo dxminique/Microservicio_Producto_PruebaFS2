@@ -2,13 +2,14 @@ package com.huertohogar.ms_productos.service;
 
 import com.huertohogar.ms_productos.model.Producto;
 import com.huertohogar.ms_productos.repository.ProductoRepository;
+
 import org.springframework.stereotype.Service;
 
 import java.util.List;
 
 @Service
-
 public class ProductoService {
+
     private final ProductoRepository productoRepository;
 
     public ProductoService(ProductoRepository productoRepository) {
@@ -41,5 +42,17 @@ public class ProductoService {
     public void delete(Long id) {
         Producto existente = getById(id);
         productoRepository.delete(existente);
+    }
+
+
+    public void descontarStock(Long id, int cantidad) {
+        Producto producto = getById(id);
+
+        if (producto.getStock() < cantidad) {
+            throw new RuntimeException("Stock insuficiente para el producto ID " + id);
+        }
+
+        producto.setStock(producto.getStock() - cantidad);
+        productoRepository.save(producto);
     }
 }
